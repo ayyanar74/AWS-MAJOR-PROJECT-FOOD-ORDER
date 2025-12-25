@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Order Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 400px;
+            margin: auto;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Online Food Order</h2>
+
+<form id="orderForm">
+    <input type="text" id="name" placeholder="Customer Name" required>
+    <input type="text" id="phone" placeholder="Phone Number" required>
+
+    <select id="foodItem">
+        <option>Veg Burger</option>
+        <option>Veg Pizza</option>
+        <option>Veg Biryani</option>
+        <option>Veg Fried Rice</option>
+    </select>
+
+    <input type="number" id="quantity" placeholder="Quantity" required>
+    <textarea id="address" placeholder="Delivery Address"></textarea>
+
+    <button type="submit">Place Order</button>
+</form>
+
+<p id="result"></p>
+
+<script>
+document.getElementById("orderForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const orderData = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        foodItem: document.getElementById("foodItem").value,
+        quantity: document.getElementById("quantity").value,
+        address: document.getElementById("address").value
+    };
+
+    fetch("https://eyhissbwhe.execute-api.ap-northeast-1.amazonaws.com/prod/order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").innerHTML =
+            "✅ Order Placed Successfully<br>Order ID: " + data.orderId;
+        document.getElementById("orderForm").reset();
+    })
+    .catch(error => {
+        document.getElementById("result").innerText =
+            "❌ Error placing order";
+        console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>
